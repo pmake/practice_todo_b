@@ -6,14 +6,18 @@
         <link rel="stylesheet" href="stylesheet.css" type="text.css" />
     </head>
     <body>
-        <div id="inputArea">
+        <div>
             <h1>Simple Todo.</h1>
-            Type here: <input type="text" id="inputData"/>
-            <input type="submit" id="submit" value="Add"/>
+            <span id="inputArea">Type here: <input type="text" id="inputData"/>
+            <input type="submit" id="submit" value="Add"/></span>
         </div>
         <div id="outputArea">
-            <ul id="todoArea"></ul>
-            <ul id="finArea"></ul>
+            <ul id="todoArea">
+                <li id="todoTitle"><input type="checkbox" class="todoCheck" id="todoCheckAll">Todos.</li>
+            </ul>
+            <ul id="finArea">
+                <li id="finTitle"><input type="checkbox" class="finCheck" id="finCheckAll">Finished.</li>
+            </ul>
         </div>
         <script src="todo.js"></script>
         <script src="ls.js"></script>

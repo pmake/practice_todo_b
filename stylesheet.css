@@ -1,47 +1,56 @@
-*{
- box-sizing:border-box;
-}
 h1{
     text-align:center;
     font-size:3em;
     height:1em;
 }
-#todoArea{
-    
-    width:30%;
+#todoArea,#finArea{
+    width:30vw;
     position:absolute;
-    left:0px;
+    left:1vw;
 }
 #finArea{
-   
-    width:30%;
-    position:absolute;
-    left:50%;
+    left:51vw;
 }
-#todoArea li{
+#todoArea li,#finArea li{
     
     list-style:none;
-    border-bottom:solid;
+    border-bottom:dashed;
     border-bottom-color:black;
     border-bottom-width:1px;
-    padding:10px;
-    
+    padding:0.5em;
+    font-size:1.5em;
 }
-#finArea li{
-    list-style:none;
-    border-bottom:solid;
-    border-bottom-color:black;
-    border-bottom-width:1px;
-    padding:10px;
-}
-.delete{
+.todoDelete,.finDelete{
     position:absolute;
     right:-2em;
+    background-color:silver;
+    width:1.5em;
+    height:1.5em;
 }
-.shift{
+.todoCheck,.finCheck{
     position:absolute;
     left:0px;
+    width:1.5em;
+    height:1.5em;
 }
 input{
     font-size:1em;
+}
+#checkAll{
+    position:absolute;
+    left:0px;
+    padding:0.5em;
+}
+#outputArea{
+    margin-top:1.5em;
+    border-bottom:solid;
+    border-width:thin;
+}
+ul #todoTitle,ul #finTitle{
+    border-bottom:none;
+    font-size:160%;
+    text-align:center;
+}
+span{
+    font-size:165%;
 }

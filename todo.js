@@ -2,7 +2,10 @@ var todo = (function(){
     var todos = [],finTodos = [];
     // for reducing DOM reading.
     var todoDiv = document.getElementById("todoArea"),
-    finDiv = document.getElementById("finArea");
+    finDiv = document.getElementById("finArea"),
+    todoCheckAll = document.getElementById("todoCheckAll"),
+    finCheckAll = document.getElementById("finCheckAll"),
+    inputData = document.getElementById("inputData");
     
     // functions
     function load(lsTodos,lsFinTodos){
@@ -21,8 +24,9 @@ var todo = (function(){
     }
     
     function add(){
-        var text = document.getElementById("inputData").value;
-        document.getElementById("inputData").value ="";
+        var text = inputData.value;
+        inputData.value ="";
+        inputData.focus();
         if(text){
             creEle("li",text,todoDiv);
             todos.push(text);
@@ -30,26 +34,44 @@ var todo = (function(){
         }
     }
 
-    function creEle(element,text,dest,index){
+    function creEle(element,text,dest){
         var node = document.createElement(element),
         textNode = document.createTextNode(text),
         deleteBt = document.createElement("input"),
-        shiftBt =document.createElement("input");
+        checkBt =document.createElement("input");
         
-        deleteBt.setAttribute("id","deleteBt_"+index);
         deleteBt.setAttribute("value","X");
         deleteBt.setAttribute("type","button");
-        deleteBt.className = "delete"
         
-        shiftBt.setAttribute("id","shiftBt_"+index);
-        shiftBt.setAttribute("value","C");
-        shiftBt.setAttribute("type","button");
-        shiftBt.className = "shift"
-        
-        node.appendChild(shiftBt);
+        checkBt.setAttribute("type","checkbox");
+        //區別是哪一邊的checkboxes
+        if(dest == todoDiv){
+            deleteBt.className = "todoDelete";
+            checkBt.className = "todoCheck";
+        }
+        else{
+            deleteBt.className = "finDelete";
+            checkBt.className = "finCheck";
+        }
+        node.appendChild(checkBt);
         node.appendChild(textNode);
         node.appendChild(deleteBt);
         dest.appendChild(node);
     }
-    return {load:load,add:add};
+    function checkAllToggle(target){
+        var checkBoxes = document.getElementsByClassName(target);
+        if((target=="todoCheck" && todoCheckAll.checked==true) || (target=="finCheck" && finCheckAll.checked==true))
+        {
+            for(var index in checkBoxes){
+                checkBoxes[index].checked = true ;
+            }
+        }
+        else
+        {
+            for(var index in checkBoxes){
+                checkBoxes[index].checked = false ;
+            }
+        }
+    }
+    return {load:load,add:add,checkAllToggle:checkAllToggle};
 }());
