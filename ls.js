@@ -1,4 +1,5 @@
 var ls = (function(){
+    'use strict';
     var todos=[],finTodos=[];
     
     function getTodos(){
@@ -9,7 +10,6 @@ var ls = (function(){
         if(localStorage.finTodos){
             finTodos = JSON.parse(localStorage.finTodos);
         }
-        todo.load(todos,finTodos);
     }
     function setTodos(curTodos,curFinTodos){
         if(curTodos){
@@ -19,5 +19,14 @@ var ls = (function(){
             localStorage.finTodos = JSON.stringify(curFinTodos);
         }
     }
-    return {getTodos:getTodos,setTodos:setTodos};
+    
+    function passingData(){
+        return [todos,finTodos];
+    }
+    
+    return {
+        getTodos:getTodos,
+        setTodos:setTodos,
+        passingData:passingData
+    };
 }());

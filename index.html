@@ -6,21 +6,27 @@
         <link rel="stylesheet" href="stylesheet.css" type="text.css" />
     </head>
     <body>
-        <div>
+        <div id="inputArea">
             <h1>Simple Todo.</h1>
-            <span id="inputArea">Type here: <input type="text" id="inputData"/>
+            <span>Type here: <input type="text" id="inputData"/>
             <input type="submit" id="submit" value="Add"/></span>
         </div>
         <div id="outputArea">
+            <div id="checkedOrdersArea">
+                <p>Checked Items:
+                    <input type="button" value = "→" id="todoMoveAll"><span class="orderName"> Move</span>
+                    <input type="button" value = "X" id="todoDeleteAll"><span class="orderName"> Delete</span>
+                </p>
+            </div>
             <ul id="todoArea">
-                <li id="todoTitle"><input type="checkbox" class="todoCheck" id="todoCheckAll">Todos.</li>
+                <li id="todoTitle"><input type="checkbox" id="todoCheckAll">Todos.</li>
             </ul>
             <ul id="finArea">
-                <li id="finTitle"><input type="checkbox" class="finCheck" id="finCheckAll">Finished.</li>
+                <li id="finTitle"><input type="checkbox" id="finCheckAll">Finished.</li>
             </ul>
         </div>
-        <script src="todo.js"></script>
         <script src="ls.js"></script>
+        <script src="todo.js"></script>
         <script src="main.js"></script>
     </body>
 </html>

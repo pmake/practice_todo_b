@@ -1,4 +1,5 @@
 var todo = (function(){
+    'use strict';
     var todos = [],finTodos = [];
     // for reducing DOM reading.
     var todoDiv = document.getElementById("todoArea"),
@@ -8,17 +9,22 @@ var todo = (function(){
     inputData = document.getElementById("inputData");
     
     // functions
-    function load(lsTodos,lsFinTodos){
-        todos = lsTodos;
-        finTodos = lsFinTodos;
+    function getData(){
+        ls.getTodos();
+        var data = ls.passingData();
+        todos = data[0];
+        finTodos = data[1];
+    }
+    
+    function load(){
         if(todos){
             todos.forEach(function(element,index){
-                creEle("li",element,todoDiv);
+                creEle("li",element,todoDiv,index);
             });
         }
         if(finTodos){
             finTodos.forEach(function(element,index){
-                creEle("li",element,finDiv);
+                creEle("li",element,finDiv,index);
             });
         }
     }
@@ -28,17 +34,19 @@ var todo = (function(){
         inputData.value ="";
         inputData.focus();
         if(text){
-            creEle("li",text,todoDiv);
+            creEle("li",text,todoDiv,todos.length);
             todos.push(text);
             ls.setTodos(todos);
         }
     }
 
-    function creEle(element,text,dest){
+    function creEle(element,text,dest,index){
         var node = document.createElement(element),
         textNode = document.createTextNode(text),
         deleteBt = document.createElement("input"),
         checkBt =document.createElement("input");
+        
+        node.setAttribute('id',index);
         
         deleteBt.setAttribute("value","X");
         deleteBt.setAttribute("type","button");
@@ -60,18 +68,56 @@ var todo = (function(){
     }
     function checkAllToggle(target){
         var checkBoxes = document.getElementsByClassName(target);
+        if (target=="todoCheck"){var childrens = document.getElementById("todoArea").children;}
+        else{var childrens = document.getElementById("finArea").children;}
+        var i=0;
+        
         if((target=="todoCheck" && todoCheckAll.checked==true) || (target=="finCheck" && finCheckAll.checked==true))
         {
-            for(var index in checkBoxes){
-                checkBoxes[index].checked = true ;
+            for(;i<checkBoxes.length;i++){
+                checkBoxes[i].checked = true ;
+                textDeco(childrens[i+1],true);
             }
         }
         else
         {
-            for(var index in checkBoxes){
-                checkBoxes[index].checked = false ;
+            for(;i<checkBoxes.length;i++){
+                checkBoxes[i].checked = false ;
+                textDeco(childrens[i+1],false);
             }
         }
     }
-    return {load:load,add:add,checkAllToggle:checkAllToggle};
+    function textDeco(target,decoTrue){
+        if(decoTrue){
+            target.style.textDecoration = "line-through";
+        }else{
+            target.style.textDecoration = "none";
+        }
+    }
+    function deleteItem(elem,dest){
+        elem.parentNode.removeChild(elem);
+        if(dest==='todos'){
+            todos.splice(elem.id,1);
+            ls.setTodos(todos);
+            resetId(todoDiv);
+        }else if(dest==='finTodos'){
+            finTodos.splice(elem.id,1);
+            ls.setTodos(false,finTodos);
+            resetId(finDiv);
+        }
+    }
+    function resetId(dest){
+        var c = dest.children;
+        for(var i=1;i<c.length;i++){
+            c[i].id=i-1;
+        }
+    }
+    return {
+    getData:getData,
+    load:load,
+    add:add,
+    checkAllToggle:checkAllToggle,
+    textDeco:textDeco,
+    deleteItem:deleteItem
+    };
 }());
