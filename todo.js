@@ -1,3 +1,7 @@
+//版本a，另有版本b是把勾選功能改為直接切換並加上自動編號
+//a,b版差異可做為UX設計case study.
+//完成後下一步就是把b版web app打包成mobile本地端不需連網app
+
 var todo = (function(){
     'use strict';
     var todos = [],finTodos = [];
@@ -15,7 +19,6 @@ var todo = (function(){
         todos = data[0];
         finTodos = data[1];
     }
-    
     function load(){
         if(todos){
             todos.forEach(function(element,index){
@@ -28,7 +31,6 @@ var todo = (function(){
             });
         }
     }
-    
     function add(){
         var text = inputData.value;
         inputData.value ="";
@@ -39,7 +41,6 @@ var todo = (function(){
             ls.setTodos(todos);
         }
     }
-
     function creEle(element,text,dest,index){
         var node = document.createElement(element),
         textNode = document.createTextNode(text),
@@ -54,10 +55,12 @@ var todo = (function(){
         checkBt.setAttribute("type","checkbox");
         //區別是哪一邊的checkboxes
         if(dest == todoDiv){
+            node.className = "todo";
             deleteBt.className = "todoDelete";
             checkBt.className = "todoCheck";
         }
         else{
+            node.className = "finTodo";
             deleteBt.className = "finDelete";
             checkBt.className = "finCheck";
         }
@@ -112,12 +115,46 @@ var todo = (function(){
             c[i].id=i-1;
         }
     }
+    function moveCheckedItems(){
+        var checkedInputs = document.querySelectorAll("input:checked");
+        for(var i=0;i<checkedInputs.length;i++){
+            if(checkedInputs[i].className==="todoCheck"){
+                var text =checkedInputs[i].parentNode.textContent;
+                creEle('li',text,finDiv,finTodos.length);
+                finTodos.push(text);
+                ls.setTodos(false,finTodos);
+                deleteItem(checkedInputs[i].parentNode,'todos');
+            }else if(checkedInputs[i].className==="finCheck"){
+                var text =checkedInputs[i].parentNode.textContent;
+                creEle('li',text,todoDiv,todos.length);
+                todos.push(text);
+                ls.setTodos(todos);
+                deleteItem(checkedInputs[i].parentNode,'finTodos');
+            }
+        }
+        document.getElementById("todoCheckAll").checked = false;
+        document.getElementById("finCheckAll").checked = false;
+    }
+    function delCheckedItems(){
+        var checkedInputs = document.querySelectorAll("input:checked");
+        for(var i=0;i<checkedInputs.length;i++){
+            if(checkedInputs[i].className === "todoCheck"){
+                deleteItem(checkedInputs[i].parentNode,'todos'); 
+            }else if(checkedInputs[i].className === "finCheck"){
+                deleteItem(checkedInputs[i].parentNode,'finTodos');
+            }
+        }
+        document.getElementById("todoCheckAll").checked = false;
+        document.getElementById("finCheckAll").checked = false;
+    }
     return {
     getData:getData,
     load:load,
     add:add,
     checkAllToggle:checkAllToggle,
     textDeco:textDeco,
-    deleteItem:deleteItem
+    deleteItem:deleteItem,
+    delCheckedItems:delCheckedItems,
+    moveCheckedItems:moveCheckedItems
     };
 }());

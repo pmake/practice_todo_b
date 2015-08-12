@@ -8,6 +8,8 @@ document.getElementById("submit").addEventListener('click',todo.add);
 document.getElementById("inputData").addEventListener('keydown',function(e){if(e.keyCode==13){todo.add();}});
 document.getElementById("todoCheckAll").addEventListener('click',function(){todo.checkAllToggle("todoCheck");});
 document.getElementById("finCheckAll").addEventListener('click',function(){todo.checkAllToggle("finCheck");});
+document.getElementById("moveChecked").addEventListener('click',todo.moveCheckedItems);
+document.getElementById("deleteChecked").addEventListener('click',todo.delCheckedItems);
 document.querySelector('body').addEventListener('click',function(e){
     //切換勾選
     if(e.target.className=='todoCheck'||e.target.className=='finCheck'){
