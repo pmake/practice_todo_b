@@ -1,6 +1,6 @@
-//版本a，另有版本b是把勾選功能改為直接切換並加上自動編號
-//a,b版差異可做為UX設計case study.
-//完成後下一步就是把b版web app打包成mobile本地端不需連網app
+//版本b
+//待辦1、自動編號2、勾選改切換3、點擊textnode可編輯內容
+//4、前3項完成後把b版web app打包成mobile本地端不需連網app
 
 var todo = (function(){
     'use strict';
