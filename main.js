@@ -1,3 +1,4 @@
+//test
 //localStorage.finTodos = JSON.stringify(["f1","f2","f3","f4"]);
 todo.getData();
 todo.load();
