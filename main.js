@@ -5,28 +5,26 @@ todo.load();
 //localStorage.removeItem("finTodos");
 // Add listeners.
 document.getElementById("submit").addEventListener('click',todo.add);
-document.getElementById("inputData").addEventListener('keydown',function(e){if(e.keyCode==13){todo.add();}});
-document.getElementById("todoCheckAll").addEventListener('click',function(){todo.checkAllToggle("todoCheck");});
-document.getElementById("finCheckAll").addEventListener('click',function(){todo.checkAllToggle("finCheck");});
-document.getElementById("moveChecked").addEventListener('click',todo.moveCheckedItems);
-document.getElementById("deleteChecked").addEventListener('click',todo.delCheckedItems);
+document.getElementById("inputData").addEventListener('keydown',function(e){if(e.keyCode===13){todo.add();}});
+document.getElementById("todoCheckAll").addEventListener('click',function(){todo.changeSideAll('todos');});
+document.getElementById("finCheckAll").addEventListener('click',function(){todo.changeSideAll('finTodos');});
+document.getElementById("todoDelAll").addEventListener('click',function(){todo.delAllItems('todos');});
+document.getElementById("finDelAll").addEventListener('click',function(){todo.delAllItems('finTodos');});
 document.querySelector('body').addEventListener('click',function(e){
-    //切換勾選
-    if(e.target.className=='todoCheck'||e.target.className=='finCheck'){
-        if (e.target.checked==true){
-            todo.textDeco(e.target.parentElement,true);
-        }else{
-            todo.textDeco(e.target.parentElement,false);
-        }
-    }
-    //刪除元素
-    if(e.target.className === 'todoDelete'){
+    //改switch
+    if(e.target.className=='todoCheck'){
+        todo.changeSide(e.target.parentNode,'todos');
+    }else if(e.target.className=='finCheck'){
+        todo.changeSide(e.target.parentNode,'finTodos');
+    }else if(e.target.className === 'todoDelete'){
         todo.deleteItem(e.target.parentNode,'todos');
-        //refreshText
         todo.refreshText(document.getElementById("todoArea"));
     }else if(e.target.className === 'finDelete'){
         todo.deleteItem(e.target.parentNode,'finTodos');
-        //refreshText
         todo.refreshText(document.getElementById("finArea"));
+    }else if(e.target.className === 'todo'){
+        todo.modify(e.target,'todos');
+    }else if(e.target.className === 'finTodo'){
+        todo.modify(e.target,'finTodos');
     }
 });

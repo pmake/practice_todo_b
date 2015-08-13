@@ -12,17 +12,11 @@
             <input type="submit" id="submit" value="Add"/></span>
         </div>
         <div id="outputArea">
-            <div id="checkedOrdersArea">
-                <p>Checked Items:
-                    <input type="button" value = "→" id="moveChecked"><span class="orderName"> Move</span>
-                    <input type="button" value = "X" id="deleteChecked"><span class="orderName"> Delete</span>
-                </p>
-            </div>
             <ul id="todoArea">
-                <li id="todoTitle"><input type="checkbox" id="todoCheckAll">Todos.</li>
+                <li id="todoTitle"><input type="button" value="→" id="todoCheckAll">Todos.<input type="button" value="X" id="todoDelAll"></li>
             </ul>
             <ul id="finArea">
-                <li id="finTitle"><input type="checkbox" id="finCheckAll">Finished.</li>
+                <li id="finTitle"><input type="button" value="←" id="finCheckAll">Finished.<input type="button" value="X" id="finDelAll"></li>
             </ul>
         </div>
         <script src="ls.js"></script>

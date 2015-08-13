@@ -1,6 +1,7 @@
 //版本b
 //待辦1、自動編號2、勾選改切換3、點擊textnode可編輯內容
-//4、前3項完成後把b版web app打包成mobile本地端不需連網app
+//4、fin側新增時改置頂
+//5、前4項完成後把b版web app打包成mobile本地端不需連網app
 
 var todo = (function(){
     'use strict';
@@ -41,7 +42,7 @@ var todo = (function(){
             ls.setTodos(todos);
         }
     }
-    function creEle(element,text,dest,index){
+    function creEle(element,text,dest,index,atBegin){
         //顯示時才編號，不直接將編號存檔，減少修改
         text =(index+1).toString()+'. '+text;
         var node = document.createElement(element),
@@ -54,43 +55,25 @@ var todo = (function(){
         deleteBt.setAttribute("value","X");
         deleteBt.setAttribute("type","button");
         
-        checkBt.setAttribute("type","checkbox");
+        checkBt.setAttribute("type","button");
         //區別是哪一邊的checkboxes
         if(dest == todoDiv){
             node.className = "todo";
             deleteBt.className = "todoDelete";
             checkBt.className = "todoCheck";
+            checkBt.setAttribute("value","→");
         }
         else{
             node.className = "finTodo";
             deleteBt.className = "finDelete";
             checkBt.className = "finCheck";
+            checkBt.setAttribute("value","←");
         }
         node.appendChild(checkBt);
         node.appendChild(textNode);
         node.appendChild(deleteBt);
-        dest.appendChild(node);
-    }
-    function checkAllToggle(target){
-        var checkBoxes = document.getElementsByClassName(target);
-        if (target=="todoCheck"){var childrens = document.getElementById("todoArea").children;}
-        else{var childrens = document.getElementById("finArea").children;}
-        var i=0;
-        
-        if((target=="todoCheck" && todoCheckAll.checked==true) || (target=="finCheck" && finCheckAll.checked==true))
-        {
-            for(;i<checkBoxes.length;i++){
-                checkBoxes[i].checked = true ;
-                textDeco(childrens[i+1],true);
-            }
-        }
-        else
-        {
-            for(;i<checkBoxes.length;i++){
-                checkBoxes[i].checked = false ;
-                textDeco(childrens[i+1],false);
-            }
-        }
+        if(!atBegin){dest.appendChild(node);}
+        else{dest.insertBefore(node,dest.childNodes[2]);}
     }
     function textDeco(target,decoTrue){
         if(decoTrue){
@@ -130,55 +113,104 @@ var todo = (function(){
             }
         }
     }
-    function moveCheckedItems(){
-        var checkedInputs = document.querySelectorAll("input:checked");
-        for(var i=0;i<checkedInputs.length;i++){
-            if(checkedInputs[i].className==="todoCheck"){
-                var text =todos[checkedInputs[i].parentNode.id];
-                creEle('li',text,finDiv,finTodos.length);
-                finTodos.push(text);
-                ls.setTodos(false,finTodos);
-                deleteItem(checkedInputs[i].parentNode,'todos');
-            }else if(checkedInputs[i].className==="finCheck"){
-                var text =finTodos[checkedInputs[i].parentNode.id];
-                creEle('li',text,todoDiv,todos.length);
-                todos.push(text);
-                ls.setTodos(todos);
-                deleteItem(checkedInputs[i].parentNode,'finTodos');
-            }
+    function changeSide(elem,dest){
+        if(dest==='todos'){
+            var text = todos[elem.id];
+            creEle('li',text,finDiv,finTodos.length,true);
+            finTodos.unshift(text);
+            ls.setTodos(false,finTodos);
+            deleteItem(elem,dest);
+            resetId(finDiv);
+        }else{
+            var text = finTodos[elem.id];
+            creEle('li',text,todoDiv,todos.length);
+            todos.push(text);
+            ls.setTodos(todos);
+            deleteItem(elem,dest);
         }
-        //refreshText
         refreshText(todoDiv);
         refreshText(finDiv);
-        
-        document.getElementById("todoCheckAll").checked = false;
-        document.getElementById("finCheckAll").checked = false;
     }
-    function delCheckedItems(){
-        var checkedInputs = document.querySelectorAll("input:checked");
-        for(var i=0;i<checkedInputs.length;i++){
-            if(checkedInputs[i].className === "todoCheck"){
-                deleteItem(checkedInputs[i].parentNode,'todos'); 
-            }else if(checkedInputs[i].className === "finCheck"){
-                deleteItem(checkedInputs[i].parentNode,'finTodos');
+    function changeSideAll(dest){
+        if(dest==='todos'){
+            todos.forEach(function(element,index){
+                creEle("li",element,finDiv,finTodos.length,true);
+                //改用concat在迴圈外一次加入減少i/o
+                //finTodos.unshift(element);
+                //ls.setTodos(false,finTodos);
+            });
+            todos.reverse();//
+            finTodos = todos.concat(finTodos);//
+            ls.setTodos(false,finTodos);//
+            refreshText(finDiv);
+            resetId(finDiv);
+            delAllItems(dest);
+        }else{
+            finTodos.forEach(function(element,index){
+                creEle("li",element,todoDiv,todos.length);
+                //todos.push(element);
+                //ls.setTodos(todos);
+            });
+            todos = todos.concat(finTodos);
+            ls.setTodos(todos);
+            refreshText(todoDiv);
+            resetId(finDiv);
+            delAllItems(dest);
+        }
+    }
+    function delAllItems(dest){
+        if(dest==='todos'){
+            var items = document.getElementsByClassName('todo');
+            //items是物件不能用foreach
+            var count = items.length;
+            for(var i=0;i<count;i++){
+                //items物件每刪1個element就會更新編號，固定第1個可依序刪除
+                deleteItem(items[0],'todos');
+            }
+        }else{
+            var items = document.getElementsByClassName('finTodo');
+            var count = items.length;
+            for(var i=0;i<count;i++){
+                deleteItem(items[0],'finTodos');
             }
         }
-        //refreshText
-        refreshText(todoDiv);
-        refreshText(finDiv);
-        
-        document.getElementById("todoCheckAll").checked = false;
-        document.getElementById("finCheckAll").checked = false;
+    }
+    function modify(target,dest){
+        if(dest === 'todos'){
+            var width = target.parentNode.clientWidth*0.75;
+            var tempInput = document.createElement('input');
+            tempInput.setAttribute('value',target.textContent);
+            tempInput.style.width=width + 'px';
+            target.replaceChild(tempInput,target.childNodes[1]);
+            tempInput.focus();
+            tempInput.select();//全選內文
+            alert(tempInput);
+            //enter或失焦時抓取內容代入textnode替換input elem，若是點esc則還原內容
+            tempInput.addEventListener('kendown',function(e){
+                alert('in');
+                if(e.keyCode===13){
+                    
+                }//else if(e.keyCode===){
+                alert(e.keyCode);   
+                //}
+            });
+             tempInput.addEventListener('blur',function(){
+                
+            });
+        }else{
+            
+        }
     }
     return {
     getData:getData,
     load:load,
     add:add,
-    checkAllToggle:checkAllToggle,
     textDeco:textDeco,
     deleteItem:deleteItem,
-    delCheckedItems:delCheckedItems,
-    moveCheckedItems:moveCheckedItems,
-    refreshText:refreshText
+    changeSide:changeSide,
+    refreshText:refreshText,
+    delAllItems:delAllItems,
+    changeSideAll:changeSideAll,
+    modify:modify
     };
 }());
