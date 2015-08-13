@@ -1,4 +1,3 @@
-//test
 //localStorage.finTodos = JSON.stringify(["f1","f2","f3","f4"]);
 todo.getData();
 todo.load();
@@ -23,7 +22,11 @@ document.querySelector('body').addEventListener('click',function(e){
     //刪除元素
     if(e.target.className === 'todoDelete'){
         todo.deleteItem(e.target.parentNode,'todos');
+        //refreshText
+        todo.refreshText(document.getElementById("todoArea"));
     }else if(e.target.className === 'finDelete'){
         todo.deleteItem(e.target.parentNode,'finTodos');
+        //refreshText
+        todo.refreshText(document.getElementById("finArea"));
     }
 });

@@ -42,6 +42,8 @@ var todo = (function(){
         }
     }
     function creEle(element,text,dest,index){
+        //顯示時才編號，不直接將編號存檔，減少修改
+        text =(index+1).toString()+'. '+text;
         var node = document.createElement(element),
         textNode = document.createTextNode(text),
         deleteBt = document.createElement("input"),
@@ -115,23 +117,40 @@ var todo = (function(){
             c[i].id=i-1;
         }
     }
+    function refreshText(dest){
+        var c = dest.children;
+        var i=0;
+        if(dest.id==="todoArea"){
+            for(i=1;i<c.length;i++){
+                c[i].childNodes[1].nodeValue=i+'. '+todos[i-1];
+            }
+        }else{
+            for(i=1;i<c.length;i++){
+                c[i].childNodes[1].nodeValue=i+'. '+finTodos[i-1];
+            }
+        }
+    }
     function moveCheckedItems(){
         var checkedInputs = document.querySelectorAll("input:checked");
         for(var i=0;i<checkedInputs.length;i++){
             if(checkedInputs[i].className==="todoCheck"){
-                var text =checkedInputs[i].parentNode.textContent;
+                var text =todos[checkedInputs[i].parentNode.id];
                 creEle('li',text,finDiv,finTodos.length);
                 finTodos.push(text);
                 ls.setTodos(false,finTodos);
                 deleteItem(checkedInputs[i].parentNode,'todos');
             }else if(checkedInputs[i].className==="finCheck"){
-                var text =checkedInputs[i].parentNode.textContent;
+                var text =finTodos[checkedInputs[i].parentNode.id];
                 creEle('li',text,todoDiv,todos.length);
                 todos.push(text);
                 ls.setTodos(todos);
                 deleteItem(checkedInputs[i].parentNode,'finTodos');
             }
         }
+        //refreshText
+        refreshText(todoDiv);
+        refreshText(finDiv);
+        
         document.getElementById("todoCheckAll").checked = false;
         document.getElementById("finCheckAll").checked = false;
     }
@@ -144,6 +163,10 @@ var todo = (function(){
                 deleteItem(checkedInputs[i].parentNode,'finTodos');
             }
         }
+        //refreshText
+        refreshText(todoDiv);
+        refreshText(finDiv);
+        
         document.getElementById("todoCheckAll").checked = false;
         document.getElementById("finCheckAll").checked = false;
     }
@@ -155,6 +178,7 @@ var todo = (function(){
     textDeco:textDeco,
     deleteItem:deleteItem,
     delCheckedItems:delCheckedItems,
-    moveCheckedItems:moveCheckedItems
+    moveCheckedItems:moveCheckedItems,
+    refreshText:refreshText
     };
 }());
