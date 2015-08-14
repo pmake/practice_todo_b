@@ -9,8 +9,6 @@ var todo = (function(){
     // for reducing DOM reading.
     var todoDiv = document.getElementById("todoArea"),
     finDiv = document.getElementById("finArea"),
-    todoCheckAll = document.getElementById("todoCheckAll"),
-    finCheckAll = document.getElementById("finCheckAll"),
     inputData = document.getElementById("inputData");
     
     // functions
@@ -176,30 +174,44 @@ var todo = (function(){
         }
     }
     function modify(target,dest){
-        if(dest === 'todos'){
-            var width = target.parentNode.clientWidth*0.75;
-            var tempInput = document.createElement('input');
-            tempInput.setAttribute('value',target.textContent);
-            tempInput.style.width=width + 'px';
-            target.replaceChild(tempInput,target.childNodes[1]);
-            tempInput.focus();
-            tempInput.select();//全選內文
-            alert(tempInput);
-            //enter或失焦時抓取內容代入textnode替換input elem，若是點esc則還原內容
-            tempInput.addEventListener('kendown',function(e){
-                alert('in');
-                if(e.keyCode===13){
-                    
-                }//else if(e.keyCode===){
-                alert(e.keyCode);   
-                //}
-            });
-             tempInput.addEventListener('blur',function(){
-                
-            });
-        }else{
+        var width = target.parentNode.clientWidth*0.75,
+            oriText = target.textContent,
+            seriNum = parseInt(oriText),
+            seriNumText = seriNum.toString()+'. ',
+            todoText = oriText.substring(seriNum.toString().length+2),
+            tempInput = document.createElement('input');
+        
+        tempInput.setAttribute('value',todoText);
+        tempInput.style.width=width + 'px';
+        target.replaceChild(tempInput,target.childNodes[1]);
+        tempInput.focus();
+        tempInput.select();//全選內文
+        function replaceText(recover){
+            if(dest==='todos'){var targetList=todos;}
+            else{var targetList=finTodos;}
             
+            if(recover){var newTodoText= todoText;}
+            else{var newTodoText= tempInput.value;}
+            var newTextNode=document.createTextNode(seriNumText+newTodoText);
+            target.replaceChild(newTextNode,target.childNodes[1]);
+            targetList[seriNum-1] = newTodoText;
+            if(dest==='todos'){ls.setTodos(targetList);}
+            else{ls.setTodos(false,targetList);}
         }
+        function tempHandler1(e){
+            if(e.keyCode===13){
+                replaceText();
+            }else if(e.keyCode===27){
+                tempInput.removeEventListener('blur',tempHandler2);
+                replaceText(true);
+            }
+        }
+        function tempHandler2(){
+            replaceText();
+        }
+        //enter或失焦時抓取內容代入textnode替換input elem，若是按esc則還原內容
+        tempInput.addEventListener('keydown',tempHandler1);
+        tempInput.addEventListener('blur',tempHandler2);
     }
     return {
     getData:getData,

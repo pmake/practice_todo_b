@@ -11,20 +11,26 @@ document.getElementById("finCheckAll").addEventListener('click',function(){todo.
 document.getElementById("todoDelAll").addEventListener('click',function(){todo.delAllItems('todos');});
 document.getElementById("finDelAll").addEventListener('click',function(){todo.delAllItems('finTodos');});
 document.querySelector('body').addEventListener('click',function(e){
-    //改switch
-    if(e.target.className=='todoCheck'){
-        todo.changeSide(e.target.parentNode,'todos');
-    }else if(e.target.className=='finCheck'){
-        todo.changeSide(e.target.parentNode,'finTodos');
-    }else if(e.target.className === 'todoDelete'){
-        todo.deleteItem(e.target.parentNode,'todos');
-        todo.refreshText(document.getElementById("todoArea"));
-    }else if(e.target.className === 'finDelete'){
-        todo.deleteItem(e.target.parentNode,'finTodos');
-        todo.refreshText(document.getElementById("finArea"));
-    }else if(e.target.className === 'todo'){
-        todo.modify(e.target,'todos');
-    }else if(e.target.className === 'finTodo'){
-        todo.modify(e.target,'finTodos');
+    switch(e.target.className){
+        case 'todoCheck':
+            todo.changeSide(e.target.parentNode,'todos');
+            break;
+        case 'finCheck':
+            todo.changeSide(e.target.parentNode,'finTodos');
+            break;
+        case 'todoDelete':
+            todo.deleteItem(e.target.parentNode,'todos');
+            todo.refreshText(document.getElementById("todoArea"));
+            break;
+        case 'finDelete':
+            todo.deleteItem(e.target.parentNode,'finTodos');
+            todo.refreshText(document.getElementById("finArea"));
+            break;
+        case 'todo':
+            todo.modify(e.target,'todos');
+            break;
+        case 'finTodo':
+            todo.modify(e.target,'finTodos');
+            break;
     }
 });
